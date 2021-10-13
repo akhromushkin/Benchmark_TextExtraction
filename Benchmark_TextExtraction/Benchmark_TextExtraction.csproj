@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <!--<TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>-->
+    <!--<TargetFramework>net472</TargetFramework>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="TestFiles\RichEdit\FirstLook.docx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TestFiles\RichEdit\FirstLook.docx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+    <PackageReference Include="DevExpress.Document.Processor" Version="21.1.6" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.3" />
+  </ItemGroup>
+
+</Project>
