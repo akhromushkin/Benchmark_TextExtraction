@@ -23,16 +23,10 @@ namespace Benchmark_TextExtraction {
         }
     }
 
-    public class FileInfo {
-        public string Path { get; set; }
-        public int ExtractedTextLength { get; set; }
-        public override string ToString() => ExtractedTextLength.ToString();
-    }
-
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.Mono, launchCount: 1, warmupCount: 1, targetCount: 5)]
+    //[SimpleJob(RuntimeMoniker.Mono, launchCount: 1, warmupCount: 1, targetCount: 1)]
     //[SimpleJob(RuntimeMoniker.CoreRt31, launchCount: 1, warmupCount: 1, targetCount: 5)]
-    //[SimpleJob(RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 1, targetCount: 5)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 1, targetCount: 1)]
     [Config(typeof(BenchmarkConfig))]
     [XmlExporterAttribute.Brief]
     [XmlExporterAttribute.Full]
@@ -49,19 +43,16 @@ namespace Benchmark_TextExtraction {
             richEditFilePaths = Directory.GetFiles(richEditFiles, "*.*", SearchOption.AllDirectories);
         }
 
-        public IEnumerable<FileInfo> RichEditFileInfos() {
-            foreach (var item in richEditFilePaths) {
-                RichEditDocumentServer richEditDocumentServer = new RichEditDocumentServer();
-                richEditDocumentServer.LoadDocument(item);
-                yield return new FileInfo() { Path = item, ExtractedTextLength = GetText(richEditDocumentServer).ToString().Length * 2 };
-            }
+        public IEnumerable<string> RichEditFileInfos() {
+            foreach (var item in richEditFilePaths)
+                yield return item;
         }
 
         [Benchmark]
         [ArgumentsSource(nameof(RichEditFileInfos))]
-        public void RichEdit(FileInfo extractedTextLength) {
+        public void RichEdit(string filePath) {
             RichEditDocumentServer richEditDocumentServer = new RichEditDocumentServer();
-            richEditDocumentServer.LoadDocument(extractedTextLength.Path);
+            richEditDocumentServer.LoadDocument(filePath);
             GetText(richEditDocumentServer);
         }
 
@@ -133,9 +124,9 @@ namespace Benchmark_TextExtraction {
         #endregion
     }
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.Mono, launchCount: 1, warmupCount: 1, targetCount: 5)]
+    //[SimpleJob(RuntimeMoniker.Mono, launchCount: 1, warmupCount: 1, targetCount: 1)]
     //[SimpleJob(RuntimeMoniker.CoreRt31, launchCount: 1, warmupCount: 1, targetCount: 5)]
-    //[SimpleJob(RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 1, targetCount: 5)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 1, targetCount: 1)]
     [Config(typeof(BenchmarkConfig))]
     [XmlExporterAttribute.Brief]
     [XmlExporterAttribute.Full]
@@ -152,19 +143,16 @@ namespace Benchmark_TextExtraction {
             spreadsheetFilePaths = Directory.GetFiles(spreadsheetFiles, "*.*", SearchOption.AllDirectories);
         }
 
-        public IEnumerable<FileInfo> SpreadsheetFileInfos() {
-            foreach (var item in spreadsheetFilePaths) {
-                Workbook workbook = new Workbook();
-                workbook.LoadDocument(item);
-                yield return new FileInfo() { Path = item, ExtractedTextLength = GetText(workbook).ToString().Length * 2 };
-            }
+        public IEnumerable<string> SpreadsheetFileInfos() {
+            foreach (var item in spreadsheetFilePaths)
+                yield return item;
         }
 
         [Benchmark]
         [ArgumentsSource(nameof(SpreadsheetFileInfos))]
-        public void Spreadsheet(FileInfo extractedTextLength) {
+        public void Spreadsheet(string filePath) {
             Workbook workbook = new Workbook();
-            workbook.LoadDocument(extractedTextLength.Path);
+            workbook.LoadDocument(filePath);
             GetText(workbook);
         }
         #region SpreadsheetTextExtractionMethods
@@ -198,9 +186,9 @@ workbook.Worksheets.SelectMany(x => x.GetExistingCells()
     }
 
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.Mono, launchCount: 1, warmupCount: 1, targetCount: 5)]
+    //[SimpleJob(RuntimeMoniker.Mono, launchCount: 1, warmupCount: 1, targetCount: 1)]
     //[SimpleJob(RuntimeMoniker.CoreRt31, launchCount: 1, warmupCount: 1, targetCount: 5)]
-    //[SimpleJob(RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 1, targetCount: 5)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 1, targetCount: 1)]
     [Config(typeof(BenchmarkConfig))]
     [XmlExporterAttribute.Brief]
     [XmlExporterAttribute.Full]
@@ -219,19 +207,16 @@ workbook.Worksheets.SelectMany(x => x.GetExistingCells()
             pdfFilePaths = Directory.GetFiles(pdfFiles, "*.*", SearchOption.AllDirectories);
         }
 
-        public IEnumerable<FileInfo> PdfFileInfos() {
-            foreach (var item in pdfFilePaths) {
-                PdfDocumentProcessor pdfDocumentProcessor = new PdfDocumentProcessor();
-                pdfDocumentProcessor.LoadDocument(item);
-                yield return new FileInfo() { Path = item, ExtractedTextLength = pdfDocumentProcessor.GetText().Length * 2 };
-            }
+        public IEnumerable<string> PdfFileInfos() {
+            foreach (var item in pdfFilePaths)
+                yield return item;
         }
 
         [Benchmark]
         [ArgumentsSource(nameof(PdfFileInfos))]
-        public void Pdf(FileInfo extractedTextLength) {
+        public void Pdf(string filePath) {
             PdfDocumentProcessor pdfDocumentProcessor = new PdfDocumentProcessor();
-            pdfDocumentProcessor.LoadDocument(extractedTextLength.Path);
+            pdfDocumentProcessor.LoadDocument(filePath);
             pdfDocumentProcessor.GetText();
         }
     }
